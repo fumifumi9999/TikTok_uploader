@@ -91,8 +91,9 @@ def calc_chunk_params(file_size: int) -> tuple[int, int]:
     return chunk_size, total_chunk_count
 
 
-def init_upload(access_token: str, video_size: int, chunk_size: int, total_chunk_count: int) -> tuple[str, str]:
+def init_upload(video_size: int, chunk_size: int, total_chunk_count: int) -> tuple[str, str]:
     """アップロード初期化。publish_id と upload_url を返す。"""
+    access_token = get_access_token()
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json; charset=UTF-8",
@@ -146,7 +147,7 @@ def upload_chunk(upload_url: str, data: bytes, first_byte: int, last_byte: int, 
     return last_byte + 1
 
 
-def upload_file(access_token: str, path: str) -> str:
+def upload_file(path: str) -> str:
     """
     ローカル MP4 を TikTok Content Posting API でアップロードする。
     戻り値: publish_id（ステータス確認用）。
@@ -164,14 +165,13 @@ def upload_file(access_token: str, path: str) -> str:
     print(f"チャンク: {chunk_size:,} bytes × {total_chunk_count} リクエスト")
 
     try:
-        publish_id, upload_url = init_upload(access_token, file_size, chunk_size, total_chunk_count)
+        publish_id, upload_url = init_upload(file_size, chunk_size, total_chunk_count)
     except RuntimeError as e:
         if "access_token" in str(e).lower() or "invalid" in str(e).lower() or "expired" in str(e).lower():
             print("トークン期限切れの可能性があります。リフレッシュを試みます...")
             new_token = refresh_access_token()
             if new_token:
-                access_token = new_token
-                publish_id, upload_url = init_upload(access_token, file_size, chunk_size, total_chunk_count)
+                publish_id, upload_url = init_upload(file_size, chunk_size, total_chunk_count)
             else:
                 raise RuntimeError("トークンの自動更新に失敗しました。uv run auth.py で再認証してください。") from e
         else:
@@ -193,9 +193,10 @@ def upload_file(access_token: str, path: str) -> str:
     return publish_id
 
 
-def init_direct_post(access_token: str, video_size: int, chunk_size: int, total_chunk_count: int,
+def init_direct_post(video_size: int, chunk_size: int, total_chunk_count: int,
                      post_info: dict) -> tuple[str, str]:
     """Direct Post 初期化。publish_id と upload_url を返す。"""
+    access_token = get_access_token()
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json; charset=UTF-8",
@@ -226,10 +227,10 @@ def init_direct_post(access_token: str, video_size: int, chunk_size: int, total_
     return publish_id, upload_url
 
 
-def go_public(access_token: str, path: str) -> str:
+def go_public(path: str) -> str:
     """ローカル MP4 を TikTok に直接公開する。戻り値: publish_id。"""
     # --- 動画パラメータ（ここを編集して投稿設定を変更） ---
-    title = "千葉に住んでいる宇宙人から来た存在 #shorts #雑学"                                    # 動画のタイトル/説明文
+    title = "千葉に住んでいる宇宙人から来た存在 #shorts #雑学"  # 動画のタイトル/説明文
     privacy_level = "SELF_ONLY"                    # 公開範囲: PUBLIC_TO_EVERYONE / FOLLOWER_OF_CREATOR / MUTUAL_FOLLOW_FRIENDS / SELF_ONLY（未審査アプリはSELF_ONLYのみ）
     disable_duet = False                           # デュエットを無効にする
     disable_stitch = False                         # スティッチを無効にする
@@ -264,14 +265,13 @@ def go_public(access_token: str, path: str) -> str:
     print(f"モード: 直接公開 (Direct Post)")
 
     try:
-        publish_id, upload_url = init_direct_post(access_token, file_size, chunk_size, total_chunk_count, post_info)
+        publish_id, upload_url = init_direct_post(file_size, chunk_size, total_chunk_count, post_info)
     except RuntimeError as e:
         if "access_token" in str(e).lower() or "invalid" in str(e).lower() or "expired" in str(e).lower():
             print("トークン期限切れの可能性があります。リフレッシュを試みます...")
             new_token = refresh_access_token()
             if new_token:
-                access_token = new_token
-                publish_id, upload_url = init_direct_post(access_token, file_size, chunk_size, total_chunk_count, post_info)
+                publish_id, upload_url = init_direct_post(file_size, chunk_size, total_chunk_count, post_info)
             else:
                 raise RuntimeError("トークンの自動更新に失敗しました。uv run auth.py で再認証してください。") from e
         else:
@@ -292,16 +292,21 @@ def go_public(access_token: str, path: str) -> str:
     print("直接公開完了。TikTok に投稿されました。")
     return publish_id
 
+def smartphone_uploading() -> None:
+    video_path = ""
 
-def main_uploading_from_smartphone() -> None:
-    parser = argparse.ArgumentParser(description="TikTok Content Posting API で MP4 をアップロード（インボックス）")
-    parser.add_argument("video", help="アップロードする MP4 ファイルのパス")
-    parser.add_argument("--token", "-t", help="アクセストークン（未指定時は環境変数を使用）")
-    args = parser.parse_args()
-
-    access_token = (args.token or "").strip() or get_access_token()
     try:
-        publish_id = upload_file(access_token, args.video)
+        publish_id = upload_file(video_path)
+        print(f"publish_id（ステータス確認用）: {publish_id}")
+    except Exception as e:
+        print(f"エラー: {e}", file=sys.stderr)
+        sys.exit(1)
+
+def direct_uploading() -> None:
+    video_path = ""
+
+    try:
+        publish_id = go_public(video_path)
         print(f"publish_id（ステータス確認用）: {publish_id}")
     except Exception as e:
         print(f"エラー: {e}", file=sys.stderr)
@@ -309,19 +314,7 @@ def main_uploading_from_smartphone() -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="TikTok Content Posting API で MP4 を直接公開")
-    parser.add_argument("video", help="アップロードする MP4 ファイルのパス")
-    parser.add_argument("--token", "-t", help="アクセストークン（未指定時は環境変数を使用）")
-    args = parser.parse_args()
-
-    access_token = (args.token or "").strip() or get_access_token()
-    try:
-        publish_id = go_public(access_token, args.video)
-        print(f"publish_id（ステータス確認用）: {publish_id}")
-    except Exception as e:
-        print(f"エラー: {e}", file=sys.stderr)
-        sys.exit(1)
-
+    pass
 
 if __name__ == "__main__":
     main()
