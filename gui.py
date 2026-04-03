@@ -10,7 +10,7 @@ from uploader import upload_file, go_public
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("TikTok Uploader")
+        self.title("Short Video Uploader")
         self.geometry("480x260")
         self.resizable(False, False)
 
