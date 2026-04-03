@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(cp docs/index.html index.html)",
+      "Bash(cp docs/privacy.html privacy.html)",
+      "Bash(cp docs/tos.html tos.html)",
+      "Bash(cp docs/callback.html callback.html)",
+      "Bash(rm -rf docs/)"
     ]
   }
 }

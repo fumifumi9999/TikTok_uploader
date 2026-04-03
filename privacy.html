@@ -1,26 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Privacy Policy</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy – Short Video Uploader</title>
+  <style>
+    body { font-family: sans-serif; max-width: 720px; margin: 60px auto; padding: 0 24px; color: #111; line-height: 1.7; }
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.2rem; margin-top: 2em; }
+    nav a { margin-right: 16px; color: #0066cc; text-decoration: none; }
+    footer { margin-top: 60px; font-size: 0.85rem; color: #666; }
+  </style>
 </head>
 <body>
-<h1>Privacy Policy</h1>
+  <nav><a href="index.html">← Home</a></nav>
+  <h1>Privacy Policy</h1>
+  <p><strong>Application name: Short Video Uploader</strong><br />
+     Last updated: April 2025</p>
 
-<p>
-This app does not collect or store personal data.
-</p>
+  <h2>1. Overview</h2>
+  <p>Short Video Uploader is a desktop application that allows users to upload MP4 videos to their TikTok account via the TikTok Content Posting API. This Privacy Policy explains what information Short Video Uploader collects, how it is used, and how it is protected.</p>
 
-<p>
-The app only uses TikTok access tokens to publish content on behalf of the user.
-</p>
+  <h2>2. Information We Collect</h2>
+  <p>Short Video Uploader stores the following data <strong>locally on your device only</strong>:</p>
+  <ul>
+    <li>Your TikTok OAuth access token and refresh token (saved in a local <code>.env</code> file)</li>
+    <li>Your TikTok client key and client secret (entered by you and saved in <code>.env</code>)</li>
+  </ul>
+  <p>Short Video Uploader does <strong>not</strong> collect, transmit, or store any personal data on external servers. No analytics, tracking, or telemetry of any kind is performed.</p>
 
-<p>
-No data is shared with third parties.
-</p>
+  <h2>3. How We Use Your Information</h2>
+  <p>The credentials stored locally are used solely to authenticate requests to the TikTok API on your behalf — specifically to upload videos and publish posts to your own TikTok account.</p>
 
-<p>
-Contact: imazatsu.kangaeru@gmail.com
-</p>
+  <h2>4. Data Sharing</h2>
+  <p>Short Video Uploader does not share your data with any third parties. The only external communication is directly between your device and TikTok's official API endpoints (<code>open.tiktokapis.com</code>).</p>
+
+  <h2>5. Data Retention</h2>
+  <p>All data is retained locally in the <code>.env</code> file on your own device. You can delete this file at any time to remove all stored credentials.</p>
+
+  <h2>6. Security</h2>
+  <p>Credentials are stored in a plain-text <code>.env</code> file on your local machine. You are responsible for securing access to your device and this file.</p>
+
+  <h2>7. Changes to This Policy</h2>
+  <p>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated date.</p>
+
+  <h2>8. Contact</h2>
+  <p>If you have questions about this Privacy Policy, please open an issue on the project's GitHub repository.</p>
+
+  <footer>&copy; 2025 Short Video Uploader</footer>
 </body>
 </html>
