@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Authenticating… – TikTok Uploader</title>
+  <style>
+    body { font-family: sans-serif; max-width: 480px; margin: 80px auto; padding: 0 24px; color: #111; text-align: center; }
+  </style>
+</head>
+<body>
+  <h2>Completing authentication…</h2>
+  <p id="msg">Forwarding your authorization code to the local app. Please wait.</p>
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var code = params.get("code");
+      var error = params.get("error");
+
+      if (error) {
+        document.getElementById("msg").textContent =
+          "Authentication error: " + error + ". You can close this tab.";
+        return;
+      }
+
+      if (!code) {
+        document.getElementById("msg").textContent =
+          "No authorization code found. You can close this tab.";
+        return;
+      }
+
+      // Forward to the local auth.py server
+      var target = "http://localhost:3000?" + params.toString();
+      window.location.href = target;
+    })();
+  </script>
+</body>
+</html>

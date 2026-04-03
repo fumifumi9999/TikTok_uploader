@@ -15,7 +15,7 @@ from dotenv import dotenv_values
 
 ENV_FILE = ".env"
 PORT = 3000
-REDIRECT_URI = "https://treasurable-joyce-uncrossable.ngrok-free.dev"
+REDIRECT_URI = "https://fumifumi9999.github.io/TikTok_uploader/callback.html"
 
 
 def load_client_credentials() -> tuple[str, str]:
