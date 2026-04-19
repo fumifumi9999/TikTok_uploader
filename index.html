@@ -5,29 +5,314 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Short Video Uploader</title>
   <style>
-    body { font-family: sans-serif; max-width: 720px; margin: 60px auto; padding: 0 24px; color: #111; line-height: 1.6; }
-    h1 { font-size: 2rem; margin-bottom: 0.25em; }
-    nav a { margin-right: 16px; color: #0066cc; text-decoration: none; }
-    nav a:hover { text-decoration: underline; }
-    footer { margin-top: 60px; font-size: 0.85rem; color: #666; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #111;
+      line-height: 1.7;
+      background: #fff;
+    }
+
+    /* ── Header ── */
+    header {
+      background: #000;
+      color: #fff;
+      padding: 0 24px;
+    }
+    .header-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 60px;
+    }
+    .logo { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.02em; }
+    nav a {
+      color: #ccc;
+      text-decoration: none;
+      margin-left: 24px;
+      font-size: 0.9rem;
+    }
+    nav a:hover { color: #fff; }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #010101 0%, #1a1a2e 100%);
+      color: #fff;
+      padding: 80px 24px 70px;
+      text-align: center;
+    }
+    .hero h1 { font-size: 2.6rem; font-weight: 800; margin-bottom: 16px; }
+    .hero p  { font-size: 1.15rem; color: #ccc; max-width: 600px; margin: 0 auto 32px; }
+    .badge {
+      display: inline-block;
+      background: #fe2c55;
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Sections ── */
+    .section { padding: 64px 24px; }
+    .section-inner { max-width: 900px; margin: 0 auto; }
+    .section h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 32px; }
+    .section.alt { background: #f8f8f8; }
+
+    /* ── About ── */
+    .about-text { font-size: 1.05rem; color: #333; max-width: 700px; }
+    .about-text p + p { margin-top: 16px; }
+
+    /* ── Features ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+    .feature-card {
+      background: #fff;
+      border: 1px solid #e8e8e8;
+      border-radius: 12px;
+      padding: 28px 24px;
+    }
+    .feature-card .icon { font-size: 2rem; margin-bottom: 12px; }
+    .feature-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .feature-card p  { font-size: 0.92rem; color: #555; }
+
+    /* ── How it works ── */
+    .steps { counter-reset: step; display: flex; flex-direction: column; gap: 24px; }
+    .step  { display: flex; gap: 20px; align-items: flex-start; }
+    .step-num {
+      counter-increment: step;
+      min-width: 40px; height: 40px;
+      background: #000; color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .step-num::before { content: counter(step); }
+    .step-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+    .step-body p  { font-size: 0.92rem; color: #555; }
+
+    /* ── TikTok Integration ── */
+    .integration-box {
+      background: #fff0f3;
+      border: 1px solid #ffc0cb;
+      border-radius: 12px;
+      padding: 32px;
+    }
+    .integration-box h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; }
+    .scope-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .scope-tag {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 4px 12px;
+      font-size: 0.85rem;
+      font-family: monospace;
+      color: #333;
+    }
+    .integration-box p { font-size: 0.95rem; color: #444; }
+
+    /* ── Contact ── */
+    .contact-box {
+      background: #f0f4ff;
+      border-radius: 12px;
+      padding: 32px;
+      max-width: 600px;
+    }
+    .contact-box p { font-size: 0.95rem; color: #333; margin-bottom: 12px; }
+    .contact-box a { color: #0055cc; }
+
+    /* ── Footer ── */
+    footer {
+      background: #111;
+      color: #888;
+      text-align: center;
+      padding: 32px 24px;
+      font-size: 0.85rem;
+    }
+    footer a { color: #aaa; text-decoration: none; margin: 0 12px; }
+    footer a:hover { color: #fff; }
+    footer .footer-links { margin-bottom: 12px; }
   </style>
 </head>
 <body>
-  <h1>Short Video Uploader</h1>
-  <p>A desktop tool for uploading MP4 videos to TikTok using the TikTok Content Posting API.</p>
-  <nav>
-    <a href="privacy.html">Privacy Policy</a>
-    <a href="tos.html">Terms of Service</a>
-  </nav>
-  <hr />
-  <h2>Features</h2>
-  <ul>
-    <li>OAuth 2.0 authentication with TikTok</li>
-    <li>Inbox upload — send a video to your TikTok inbox to review before publishing</li>
-    <li>Direct post — publish a video immediately with configurable metadata</li>
-    <li>Automatic token refresh</li>
-    <li>Simple GUI built with Tkinter</li>
-  </ul>
-  <footer>&copy; 2025 Short Video Uploader</footer>
+
+  <!-- Header -->
+  <header>
+    <div class="header-inner">
+      <span class="logo">Short Video Uploader</span>
+      <nav>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="tos.html">Terms of Service</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="badge">TikTok Content Posting API</div>
+    <h1>Short Video Uploader</h1>
+    <p>A desktop application that lets you upload MP4 videos directly to TikTok — quickly, securely, and with full control over your content.</p>
+  </div>
+
+  <!-- About -->
+  <section class="section">
+    <div class="section-inner">
+      <h2>About This App</h2>
+      <div class="about-text">
+        <p>
+          Short Video Uploader is a desktop tool designed for content creators and developers who want a streamlined way to publish short-form video content to TikTok. Instead of using the TikTok mobile app, users can upload MP4 files directly from their computer through TikTok's official Content Posting API.
+        </p>
+        <p>
+          The application uses TikTok's official OAuth 2.0 authentication flow to securely connect your TikTok account. Your credentials are never stored by this application — authentication is handled entirely through TikTok's own login system.
+        </p>
+        <p>
+          This tool is intended for individual creators and developers testing TikTok API integrations. All data processing is performed locally on the user's machine.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section alt">
+    <div class="section-inner">
+      <h2>Features</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="icon">🔐</div>
+          <h3>Secure TikTok Login</h3>
+          <p>Uses TikTok's official OAuth 2.0 flow. Your password is never seen or stored by this app.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">📥</div>
+          <h3>Inbox Upload</h3>
+          <p>Send a video to your TikTok inbox to review it privately before deciding to publish.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🚀</div>
+          <h3>Direct Post</h3>
+          <p>Publish a video immediately with configurable metadata such as title, privacy settings, and more.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🔄</div>
+          <h3>Auto Token Refresh</h3>
+          <p>Automatically refreshes access tokens so you stay logged in without re-authenticating frequently.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">🖥️</div>
+          <h3>Desktop GUI</h3>
+          <p>Simple and clean interface built with Python's Tkinter — no command line required.</p>
+        </div>
+        <div class="feature-card">
+          <div class="icon">📋</div>
+          <h3>Publish ID Tracking</h3>
+          <p>After each upload, the app displays the publish ID so you can track the status of your submission.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section">
+    <div class="section-inner">
+      <h2>How It Works</h2>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <h3>Launch the App</h3>
+            <p>Open Short Video Uploader on your Windows or macOS desktop.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <h3>Log In with TikTok</h3>
+            <p>Click "Login with TikTok" — a browser window opens and you authenticate directly on TikTok's official login page.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <h3>Select Your Video</h3>
+            <p>Choose an MP4 file from your computer using the file picker.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <h3>Choose Upload Mode</h3>
+            <p>Select "Inbox Upload" to privately review the video first, or "Direct Post" to publish immediately.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num"></div>
+          <div class="step-body">
+            <h3>Upload</h3>
+            <p>Click Upload — the app sends your video to TikTok via the official Content Posting API and shows you the result.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TikTok Integration -->
+  <section class="section alt">
+    <div class="section-inner">
+      <h2>TikTok API Integration</h2>
+      <div class="integration-box">
+        <h3>Products &amp; Permissions Used</h3>
+        <p>This application integrates with the following TikTok for Developers products:</p>
+        <ul style="margin: 12px 0 12px 20px; color: #444; font-size: 0.95rem;">
+          <li><strong>Login Kit</strong> — Allows users to securely authenticate with their TikTok account via OAuth 2.0. Uses the <code>user.info.basic</code> scope to identify the logged-in user.</li>
+          <li><strong>Content Posting API</strong> — Enables uploading MP4 videos to TikTok on behalf of the authenticated user. Uses <code>video.upload</code> for inbox uploads and <code>video.publish</code> for direct posting.</li>
+        </ul>
+        <p>The following OAuth scopes are requested:</p>
+        <div class="scope-list">
+          <span class="scope-tag">user.info.basic</span>
+          <span class="scope-tag">video.upload</span>
+          <span class="scope-tag">video.publish</span>
+        </div>
+        <p style="margin-top: 16px; font-size: 0.88rem; color: #666;">
+          All API calls are made to TikTok's official endpoints. No user data is collected, stored, or shared by this application beyond what is necessary to perform the upload.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="section">
+    <div class="section-inner">
+      <h2>Contact &amp; Support</h2>
+      <div class="contact-box">
+        <p>If you have questions, encounter issues, or need support, please reach out via email.</p>
+        <p><strong>Developer:</strong> Fuminao Obayashi</p>
+        <p><strong>Email:</strong> <a href="mailto:fuminao.obayashi@gmail.com">fuminao.obayashi@gmail.com</a></p>
+        <p style="margin-top: 16px;">
+          For privacy-related inquiries, please refer to our <a href="privacy.html">Privacy Policy</a>.<br>
+          For terms of use, please refer to our <a href="tos.html">Terms of Service</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="tos.html">Terms of Service</a>
+      <a href="mailto:fuminao.obayashi@gmail.com">Contact</a>
+    </div>
+    &copy; 2025 Short Video Uploader &mdash; Fuminao Obayashi. All rights reserved.
+  </footer>
+
 </body>
 </html>
